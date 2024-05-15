@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rent vs Buy Calculator</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/4762ba5018.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="./styles.css">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <style>
+        /* Custom styles here */
+        body {
+            background-color: #f8f9fa;
+            margin: 0;
+        }
+
+        .jumbotron {
+            background-color: #007bff;
+            color: white;
+            padding: 2rem;
+            border-radius: 0;
+            margin-bottom: 0;
+        }
+
+        .jumbotron h1 {
+            font-size: 3rem;
+            margin-top: 0;
+        }
+
+        .jumbotron p {
+            margin-bottom: 0;
+        }
+
+        .calculator-description {
+            margin-top: 30px;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            border-radius: 0;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .glossary-section {
+            background-color: #f8f9fa;
+            padding: 50px 0;
+            margin-top: 50px;
+        }
+
+        .glossary-term {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body onload="GetDownPercent(); updateChart()" style="background-color: #f5f5f5">
+    <!-- Title Section -->
+    <div class="jumbotron text-center">
+        <h1 class="display-4">Rent vs Buy Calculator</h1>
+        <p class="lead">Make an informed decision about whether to rent or buy a home.</p>
+    </div>
+    <div class="container">
+        <!-- Image Section -->
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-8 text-center">
+                <img src="https://images.unsplash.com/photo-1560170412-0f7df0eb0fb1?q=80&w=2048&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Calculator Image" class="img-fluid rounded">
+            </div>
+        </div>
+        <!-- Description Section -->
+        <div class="text-center calculator-description">
+            <p class="lead">This calculator helps you estimate the financial impact of renting versus buying a home.
+                Fill out the inputs below to get started!</p>
+        </div>
+        <!-- Calculator Section -->
+        <div class="row">
+            <!-- Input Section -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title text-center mb-4">Enter Your Details</h3>
+                        <!--Renting section-->
+                        <section class="mb-3">
+                            <div class="section-title d-flex justify-content-between align-items-center">
+                                <h3>Renting</h3>
+                                <button onclick="RentHide()" class="btn btn-primary ml-2"><i id="themeIconRent"
+                                        class="fas fa-minus"></i></button>
+                            </div>
+
+                            <div id="renting-section">
+                                <label class="mt-3">Monthly Rent</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">$</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="monthlyrent" value="2,300"
+                                        oninput="MonthRent(); this.value = this.value.replace(/[^0-9.,]/g, '').replace(/(\..*)\./g, '$1');">
+                                </div>
+
+                                <label class="mt-3">Renters Insurance</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">$</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="rentinsure" value="20"
+                                        oninput="RentInsurance(); this.value = this.value.replace(/[^0-9.,]/g, '').replace(/(\..*)\./g, '$1');">
+                                </div>
+
+                                <label class="mt-3">Annual Rent Increase</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="rateincrease" value="3"
+                                        oninput="RentIncrease(); this.value = this.value.replace(/[^0-9.,]/g, '').replace(/(\..*)\./g, '$1');">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <!--Buying Section-->
+                        <section class="mb-3">
+                            <div class="section-title d-flex justify-content-between align-items-center">
+                                <h3>Buying</h3>
+                                <button onclick="BuyHide()" class="btn btn-primary ml-2"><i id="themeIconBuy"
+                                        class="fas fa-plus"></i></button>
+                            </div>
+
+                            <div id="buying-section">
+                                <label class="mt-3">Price</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">$</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="homeprice" value="300,000"
+                                        oninput="Price(); this.value = this.value.replace(/[^0-9.,]/g, '').replace(/(\..*)\./g, '$1');">
+                                </div>
+
+                                <label class="mt-3">Downpayment</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">$</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="dollardown" value="60,000"
+                                        oninput="GetDownPercent(); this.value = this.value.replace(/[^0-9.,]/g, '').replace(/(\..*)\./g, '$1');">
+                                    <input type="text" class="form-control ml-2" id="percentdown" value="20"
+                                        oninput="GetDownAmount(); this.value = this.value.replace(/[^0-9.,]/g, '').replace(/(\..*)\./g, '$1');">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+
+                                <label class="mt-3">Loan Amount</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">$</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="loanamount" value="240,000" readonly>
+                                </div>
+
+                                <label class="mt-3">Interest Rate</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="interest" value="4"
+                                        oninput="Interest(); this.value = this.value.replace(/[^0-9.,]/g, '').replace(/(\..*)\./g, '$1');">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+
+                                <label class="mt-3">Annual Property Tax</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="propertytax" value="4"
+                                        oninput="PropertyTax(); this.value = this.value.replace(/[^0-9.,]/g, '').replace(/(\..*)\./g, '$1');">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+
+                                <label class="mt-3">Property Tax Increase</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="taxincrease" value="4"
+                                        oninput="PropertyTaxIncrease(); this.value = this.value.replace(/[^0-9.,]/g, '').replace(/(\..*)\./g, '$1');">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+
+                                <label class="mt-3">Loan Length</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="loanlength" value="30"
+                                        oninput="LoanLength(); this.value = this.value.replace(/[^0-9.,]/g, '').replace(/(\..*)\./g, '$1');">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">yrs</span>
+                                    </div>
+                                </div>
+
+                                <label class="mt-3">Monthly Home Insurance</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">$</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="monthhomeinsurance" value="100"
+                                        oninput="MonthHomeInsurance(); this.value = this.value.replace(/[^0-9.,]/g, '').replace(/(\..*)\./g, '$1');">
+                                </div>
+
+                                <label class="mt-3">Monthly HOA Fees</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">$</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="monthhoa" value="100"
+                                        oninput="MonthHOA(); this.value = this.value.replace(/[^0-9.,]/g, '').replace(/(\..*)\./g, '$1');">
+                                </div>
+
+                                <label class="mt-3">Monthly Repairs</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">$</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="monthrepairs" value="100"
+                                        oninput="MonthRepairs(); this.value = this.value.replace(/[^0-9.,]/g, '').replace(/(\..*)\./g, '$1');">
+                                </div>
+
+                                <label class="mt-3">Monthly Mortgage Insurance</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">$</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="monthmortgageinsurance" value="0"
+                                        oninput="MonthMortgageInsurance(); this.value = this.value.replace(/[^0-9.,]/g, '').replace(/(\..*)\./g, '$1');">
+                                </div>
+
+                                <label class="mt-3">Cost to Sell</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="sellingcost" value="6"
+                                        oninput="SellingCost(); this.value = this.value.replace(/[^0-9.,]/g, '').replace(/(\..*)\./g, '$1');">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+
+                                <label class="mt-3">Closing Costs</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="closingcost" value="6"
+                                        oninput="ClosingCost(); this.value = this.value.replace(/[^0-9.,]/g, '').replace(/(\..*)\./g, '$1');">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <!--Other Section-->
+                        <section class="mb-3">
+                            <div class="section-title d-flex justify-content-between align-items-center">
+                                <h3>Other</h3>
+                                <button onclick="OtherHide()" class="btn btn-primary ml-2"><i id="themeIconOther"
+                                        class="fas fa-plus"></i></button>
+                            </div>
+
+                            <div id="other-section">
+                                <label class="mt-3">Years Before Selling</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="yrsbeforeselling" value="5"
+                                        oninput="ChangeYearsBeforeSelling(); this.value = this.value.replace(/[^0-9.,]/g, '').replace(/(\..*)\./g, '$1');">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">yrs</span>
+                                    </div>
+                                </div>
+                                <label class="mt-3">Home Appreciation</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="homeappreciation" value="2"
+                                        oninput="Appreciation(); this.value = this.value.replace(/[^0-9.,]/g, '').replace(/(\..*)\./g, '$1');">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+            <!-- Chart and Data Section -->
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title text-center mb-4">Analysis & Results</h3>
+                        <!-- Chart Here -->
+                        <!--<canvas id="myChart" width="400" height="400"></canvas> -->
+                        <!--<div id="chart_div" class="text-center" style="max-width: 100%;"></div> -->
+                        <div class="chart-container">
+                            <div id="chart_div"></div>
+                        </div>
+                        <div class="row justify-content-center mt-3 mb-3">
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <th></th>
+                                        <th>Buying Yr1</th>
+                                        <th>Rent Yr1</th>
+                                        <th>Rent Yr<span id="table-year-to-sell">5</span></th>
+                                    </tr>
+                                    <tr>
+                                        <td>Monthly P&I</td>
+                                        <td>$<span id="table-pi">1,145</span></td>
+                                        <td>$<span id="table-cost-rent-yr1">2,300</span></td>
+                                        <td>$<span id="table-cost-rent-input">2,588.67</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Prop. Tax/Ins.</td>
+                                        <td>$<span id="table=proptaxins">1,100</span></td>
+                                        <td>$<span id="table-rentinsure">20</span></td>
+                                        <td>$<span id="table-increase-insurance">22.51</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Maint. & Repairs</td>
+                                        <td>$<span id="table-maintrepairs">200</span></td>
+                                        <td>$<span>0</span></td>
+                                        <td>$<span>0</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Monthly Exp.</td>
+                                        <td>$<span id="table-total-buying-year1">2,445.8</span></td>
+                                        <td>$<span id="table-total-year1">2,320</span></td>
+                                        <td>$<span id="table-totalrent-input">2,611.18</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total Spent</td>
+                                        <td>$<span id="totalspentbuying">151,743.871</span></td>
+                                        <td></td>
+                                        <td>$<span id="totalspentrent">147,806.34</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p>Appreicated Value: <strong>$<span id="appreciated-value">331,224.24</span></strong></p>
+                        <p>House Apprciation Gain: <strong>$<span id="appreciated-gain">31,224.24</span></strong></p>
+
+                        <p>Principal Paid: <strong>$<span id="principalpaid">22,926.17</span></strong></p>
+                        <p>Interest Paid: <strong>$<span id="interestpaid">31,224.24</span></strong></p>
+
+                        <p>Cost to Sell: <strong>$<span id="costtosell">19,873.45</span></strong></p>
+
+                        <p>Investment Gain After Selling: <strong>$<span id="netgain">76,276.96</span></strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Glossary Section -->
+        <div class="glossary-section bg-light py-5">
+            <div class="container">
+                <h2 class="text-center mb-4">Glossary of Terms</h2>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="mb-4">
+                            <h4>Annual Rent Increase</h4>
+                            <p>The percentage by which rental payments are expected to increase each year due to factors
+                                such as inflation and changes in market conditions.</p>
+                        </div>
+                        <div class="mb-4">
+                            <h4>Appreciation</h4>
+                            <p>The increase in the value of a property over time. Home appreciation is influenced by
+                                factors such as market demand, location, and economic conditions.</p>
+                        </div>
+                        <div class="mb-4">
+                            <h4>Closing Costs</h4>
+                            <p>The fees and expenses associated with finalizing a real estate transaction, including
+                                loan origination fees, appraisal fees, title insurance, and attorney fees.</p>
+                        </div>
+                        <div class="mb-4">
+                            <h4>Cost to Sell</h4>
+                            <p>The total expenses incurred when selling a property, including real estate agent
+                                commissions, closing costs, and any necessary repairs or renovations.</p>
+                        </div>
+                        <div class="mb-4">
+                            <h4>Down Payment</h4>
+                            <p>The initial upfront payment made by the buyer when purchasing a home. It is usually
+                                expressed as a percentage of the total purchase price.</p>
+                        </div>
+                        <div class="mb-4">
+                            <h4>Homeowners Association (HOA) Fees</h4>
+                            <p>Fees paid by homeowners to cover the costs of maintaining and managing shared amenities
+                                and common areas within a community or development.</p>
+                        </div>
+                        <div class="mb-4">
+                            <h4>Homeowners Insurance</h4>
+                            <p>Insurance coverage that provides financial protection against damage to a home and its
+                                contents, as well as liability for injuries and property damage caused by the homeowner
+                                or their family members.</p>
+                        </div>
+                        <div class="mb-4">
+                            <h4>Interest Rate</h4>
+                            <p>The percentage of the loan amount charged by the lender as interest over a specified
+                                period, typically expressed as an annual percentage rate (APR).</p>
+                        </div>
+                        <div class="mb-4">
+                            <h4>Loan Amount</h4>
+                            <p>The total sum of money borrowed by a buyer to purchase a home. It is calculated as the
+                                difference between the home price and the down payment.</p>
+                        </div>
+                        <div class="mb-4">
+                            <h4>Loan Length</h4>
+                            <p>The duration of time over which the mortgage loan is repaid, typically expressed in
+                                years.</p>
+                        </div>
+                        <div class="mb-4">
+                            <h4>Maintenance & Repairs</h4>
+                            <p>Ongoing expenses associated with maintaining a property in good condition, such as
+                                plumbing repairs, roof maintenance, and landscaping.</p>
+                        </div>
+                        <div class="mb-4">
+                            <h4>Mortgage Insurance</h4>
+                            <p>Insurance that protects lenders against losses incurred if the borrower defaults on the
+                                mortgage loan. It is typically required for conventional loans with down payments less
+                                than 20% of the home's purchase price.</p>
+                        </div>
+                        <div class="mb-4">
+                            <h4>Principal</h4>
+                            <p>The original amount of money borrowed in a loan, excluding interest. Monthly mortgage
+                                payments go towards paying down the principal balance of the loan.</p>
+                        </div>
+                        <div class="mb-4">
+                            <h4>Property Tax</h4>
+                            <p>A tax assessed on real estate by the local government. It is based on the value of the
+                                property and is typically paid annually by the property owner.</p>
+                        </div>
+                        <div class="mb-4">
+                            <h4>Renters Insurance</h4>
+                            <p>Insurance coverage that protects tenants against loss or damage to personal belongings,
+                                as well as liability for injuries or property damage caused by the tenant.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and Chart.js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+    <script src="./app.js"></script>
+</body>
+
+</html>
